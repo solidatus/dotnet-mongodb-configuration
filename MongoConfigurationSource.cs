@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
-using MongodbConfiguration.Options;
+using MongoDB.Driver;
 
 namespace MongodbConfiguration;
 
-public sealed class MongoConfigurationSource(MongoDbConfigurationOptions options) : IConfigurationSource
+public sealed class MongoConfigurationSource(MongoClientSettings mongoSettings, string database, string collection) : IConfigurationSource
 {
-    private readonly MongoDbConfigurationOptions _options = options;
-
     public IConfigurationProvider Build(IConfigurationBuilder builder)
     {
-        return new MongoConfigurationProvider();
+        var client = new MongoClient(mongoSettings);
+
+        return new MongoConfigurationProvider(client, database, collection);
     }
 }

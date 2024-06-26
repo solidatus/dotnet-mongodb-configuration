@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Configuration;
-using MongodbConfiguration.Options;
+using MongoDB.Driver;
 
 namespace MongodbConfiguration;
 
 public static class ConfigurationManagerExtensions
 {
-    public static ConfigurationManager AddMongoDbConfiguration(this ConfigurationManager manager, MongoDbConfigurationOptions options)
+    public static ConfigurationManager AddMongoDbConfiguration(this ConfigurationManager manager, MongoClientSettings mongoSettings, string database, string collection)
     {
-        ((IConfigurationBuilder) manager).Add(new MongoConfigurationSource(options));
+        ((IConfigurationBuilder) manager).Add(new MongoConfigurationSource(mongoSettings, database, collection));
         
         return manager;
     }
