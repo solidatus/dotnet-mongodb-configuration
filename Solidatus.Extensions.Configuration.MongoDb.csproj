@@ -8,10 +8,15 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <PackageId>Solidatus.MongoDb.Configuration</PackageId>
-        <Version>1.0.4</Version>
+        <PackageId>Solidatus.Extensions.Configuration.MongoDb</PackageId>
+        <Title>MongoDb Configuration Provider</Title>
+        <Version>1.0.0</Version>
         <Authors>Robert Prust</Authors>
         <Company>Solidatus</Company>
+        <PackageTags>mongodb,configuration</PackageTags>
+        <Copyright>Copyright © Solidatus</Copyright>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/solidatus/dotnet-mongodb-configuration</PackageProjectUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 

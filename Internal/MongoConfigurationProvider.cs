@@ -2,20 +2,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using MongoDB.Driver;
 
-namespace Solidatus.MongoDb.Configuration;
+namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
 
-internal sealed class MongoConfigurationProvider(MongoClient mongoClient, string database, string collection) : IConfigurationProvider
+internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry> collection) : IConfigurationProvider
 {
     private readonly ConfigurationReloadToken _reloadToken = new();
     
-    private IMongoCollection<ConfigDbEntry> GetCollection()
-    {
-        return mongoClient.GetDatabase(database).GetCollection<ConfigDbEntry>(collection);
-    }
-    
     public bool TryGet(string key, out string? value)
     {
-        var entry = this.GetCollection().Find(Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key)).SingleOrDefault();
+        var entry = collection.Find(Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key)).SingleOrDefault();
 
         value = entry?.Value ?? null;
 
@@ -35,7 +30,7 @@ internal sealed class MongoConfigurationProvider(MongoClient mongoClient, string
             Value = value
         };
 
-        this.GetCollection().ReplaceOne(
+        collection.ReplaceOne(
             Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key),
             entry,
             updateOptions);
@@ -48,7 +43,7 @@ internal sealed class MongoConfigurationProvider(MongoClient mongoClient, string
     
     public void Load()
     {
-        this.GetCollection().Indexes.CreateOne(new CreateIndexModel<ConfigDbEntry>(Builders<ConfigDbEntry>.IndexKeys.Hashed(e => e.Key)));
+        collection.Indexes.CreateOne(new CreateIndexModel<ConfigDbEntry>(Builders<ConfigDbEntry>.IndexKeys.Hashed(e => e.Key)));
     }
     
     public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string? parentPath)
@@ -61,7 +56,7 @@ internal sealed class MongoConfigurationProvider(MongoClient mongoClient, string
                 new($"^{parentPath}"));
         }
 
-        var childKeys = this.GetCollection()
+        var childKeys = collection
             .Find(filter)
             .ToList()
             .Select(entry => ExtractNextKeySection(entry.Key, parentPath?.Length ?? 0))

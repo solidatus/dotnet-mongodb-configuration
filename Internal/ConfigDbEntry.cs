@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Solidatus.MongoDb.Configuration;
+namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
 
 internal class ConfigDbEntry
 {
