@@ -46,9 +46,9 @@ You likely want to use the existing configuration to load up the appropriate val
 The package provides functions for setting/updating and removing stored configuration values.
 
 ```{C#}
-ConfigurationEntryManager.ClearValue("Config:Key");
+MongoConfigurationManager.ClearValue("Config:Key");
 
-ConfigurationEntryManager.SetValue("Config:Key", "Value");
+MongoConfigurationManager.SetValue("Config:Key", "Value");
 ```
 
 ## Mongo version support
