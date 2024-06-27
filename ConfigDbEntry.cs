@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Solidatus.MongoDb.Configuration;
 
-public class ConfigDbEntry
+internal class ConfigDbEntry
 {
     [BsonId]
     public ObjectId Id { get; set; }

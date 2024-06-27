@@ -4,7 +4,7 @@ using MongoDB.Driver;
 
 namespace Solidatus.MongoDb.Configuration;
 
-public sealed class MongoConfigurationProvider(MongoClient mongoClient, string database, string collection) : IConfigurationProvider
+internal sealed class MongoConfigurationProvider(MongoClient mongoClient, string database, string collection) : IConfigurationProvider
 {
     private readonly ConfigurationReloadToken _reloadToken = new();
     
