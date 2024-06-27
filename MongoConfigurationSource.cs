@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace MongodbConfiguration;
+namespace Solidatus.MongoDb.Configuration;
 
 public sealed class MongoConfigurationSource(MongoClientSettings mongoSettings, string database, string collection) : IConfigurationSource
 {

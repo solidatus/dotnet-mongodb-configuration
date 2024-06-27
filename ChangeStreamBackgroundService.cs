@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Hosting;
 
-namespace MongodbConfiguration;
+namespace Solidatus.MongoDb.Configuration;
 
 public class ChangeStreamBackgroundService : BackgroundService
 {

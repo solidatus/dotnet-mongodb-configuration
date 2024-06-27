@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Primitives;
 using MongoDB.Driver;
 
-namespace MongodbConfiguration;
+namespace Solidatus.MongoDb.Configuration;
 
 public class MongoDbChangeToken<T>(IChangeStreamCursor<T> cursor) : IChangeToken
 {

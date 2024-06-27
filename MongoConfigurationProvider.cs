@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using MongoDB.Driver;
 
-namespace MongodbConfiguration;
+namespace Solidatus.MongoDb.Configuration;
 
 public sealed class MongoConfigurationProvider(MongoClient mongoClient, string database, string collection) : IConfigurationProvider
 {
@@ -78,7 +78,7 @@ public sealed class MongoConfigurationProvider(MongoClient mongoClient, string d
         var nextSectionBreak = key.IndexOf(':', prefixLength);
 
         return nextSectionBreak is -1
-            ? key[prefixLength..]
+            ? key.Substring(prefixLength)
             : key.Substring(prefixLength, nextSectionBreak - prefixLength);
     }
 }
