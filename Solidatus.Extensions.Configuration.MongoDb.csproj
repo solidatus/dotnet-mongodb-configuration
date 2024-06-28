@@ -10,21 +10,24 @@
     <PropertyGroup>
         <PackageId>Solidatus.Extensions.Configuration.MongoDb</PackageId>
         <Title>MongoDb Configuration Provider</Title>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
         <Authors>Robert Prust</Authors>
         <Company>Solidatus</Company>
         <PackageTags>mongodb,configuration</PackageTags>
         <Copyright>Copyright © Solidatus</Copyright>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/solidatus/dotnet-mongodb-configuration</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
       <PackageReference Include="MongoDB.Driver" Version="2.26.0" />
     </ItemGroup>
 

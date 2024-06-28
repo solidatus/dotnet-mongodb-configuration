@@ -41,9 +41,17 @@ internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry>
         return this._reloadToken;
     }
     
+    /// <summary>
+    /// Called when the configuration source is added, this ensures that the key field can be quickly queried
+    /// </summary>
     public void Load()
     {
-        collection.Indexes.CreateOne(new CreateIndexModel<ConfigDbEntry>(Builders<ConfigDbEntry>.IndexKeys.Hashed(e => e.Key)));
+        collection.Indexes.CreateOne(
+            new CreateIndexModel<ConfigDbEntry>(
+                Builders<ConfigDbEntry>.IndexKeys.Descending(e => e.Key),
+                new() { Unique = true }
+            )
+        );
     }
     
     public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string? parentPath)
@@ -53,7 +61,7 @@ internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry>
         if (parentPath is not null)
         {
             filter = Builders<ConfigDbEntry>.Filter.Regex(entry => entry.Key,
-                new($"^{parentPath}"));
+                new($"^{parentPath}.*"));
         }
 
         var childKeys = collection
