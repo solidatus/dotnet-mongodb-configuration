@@ -10,7 +10,7 @@
     <PropertyGroup>
         <PackageId>Solidatus.Extensions.Configuration.MongoDb</PackageId>
         <Title>MongoDb Configuration Provider</Title>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Authors>Robert Prust</Authors>
         <Company>Solidatus</Company>
         <PackageTags>mongodb,configuration</PackageTags>
