@@ -51,7 +51,13 @@ await MongoConfigurationManager.ClearValue("Config:Key");
 await MongoConfigurationManager.SetValue("Config:Key", "Value");
 ```
 
-If you are running in a multi-server deployment and want to trigger configuration reloads on all nodes when updated, you can use a changestream which calls the ReloadValues method.
+If you are running in a multi-node deployment and thus want to trigger configuration reloads on all nodes when updated, you can add the `MongoConfigurationWatcher` background service to your application's startup `ConfigureServices` method.
+
+```{C#}
+services.AddHostedService<MongoConfigurationWatcher>();
+```
+
+Alternatively you can use an existing change stream or other update method and manually call the method to reload the configuration values.
 
 ```{C#}
 MongoConfigurationManager.ReloadValues();
