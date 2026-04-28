@@ -5,10 +5,14 @@ namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
 
 internal sealed class MongoConfigurationSource(MongoClientSettings mongoSettings, string databaseName, string collectionName) : IConfigurationSource
 {
+    internal static MongoConfigurationProvider Provider { get; set; }
+    
     public IConfigurationProvider Build(IConfigurationBuilder builder)
     {
-        var collection = CollectionProvider.GetCollection(mongoSettings, databaseName, collectionName);
+        var collection = MongoProvider.GetCollection(mongoSettings, databaseName, collectionName);
 
-        return new MongoConfigurationProvider(collection);
+        Provider = new MongoConfigurationProvider(collection);
+        
+        return Provider;
     }
 }

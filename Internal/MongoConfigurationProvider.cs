@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
@@ -7,7 +8,7 @@ namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
 internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry> collection) : IConfigurationProvider
 {
     private readonly ConfigurationReloadToken _reloadToken = new();
-    
+
     public bool TryGet(string key, out string? value)
     {
         var entry = collection.Find(Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key)).SingleOrDefault();
@@ -49,7 +50,7 @@ internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry>
         collection.Indexes.CreateOne(
             new CreateIndexModel<ConfigDbEntry>(
                 Builders<ConfigDbEntry>.IndexKeys.Descending(e => e.Key),
-                new() { Unique = true }
+                new CreateIndexOptions { Unique = true }
             )
         );
     }
@@ -61,7 +62,7 @@ internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry>
         if (parentPath is not null)
         {
             filter = Builders<ConfigDbEntry>.Filter.Regex(entry => entry.Key,
-                new($"^{parentPath}.*"));
+                new BsonRegularExpression($"^{parentPath}.*"));
         }
 
         var childKeys = collection

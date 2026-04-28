@@ -2,7 +2,7 @@ using MongoDB.Driver;
 
 namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
 
-internal static class CollectionProvider
+internal static class MongoProvider
 {
     private static IMongoCollection<ConfigDbEntry>? _collection;
 
@@ -12,6 +12,11 @@ internal static class CollectionProvider
         return _collection ??= new MongoClient(clientSettings)
             .GetDatabase(database)
             .GetCollection<ConfigDbEntry>(collection);
+    }
+
+    internal static IMongoClient GetClient(MongoClientSettings clientSettings)
+    {
+        return new MongoClient(clientSettings);
     }
 
     internal static IMongoCollection<ConfigDbEntry> GetCollection()

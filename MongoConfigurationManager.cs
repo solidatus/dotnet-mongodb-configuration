@@ -25,7 +25,9 @@ public static class MongoConfigurationManager
             IsUpsert = true
         };
 
-        await CollectionProvider.GetCollection().ReplaceOneAsync(filter, entry, replaceOptions);
+        await MongoProvider.GetCollection().ReplaceOneAsync(filter, entry, replaceOptions);
+
+        ReloadValues();
     }
 
     /// <summary>
@@ -37,8 +39,18 @@ public static class MongoConfigurationManager
     {
         var filter = Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key);
 
-        var deleteResult = await CollectionProvider.GetCollection().DeleteOneAsync(filter);
+        var deleteResult = await MongoProvider.GetCollection().DeleteOneAsync(filter);
+
+        ReloadValues();
 
         return deleteResult.DeletedCount == 1;
+    }
+
+    /// <summary>
+    /// Forces a reload of the cached values from mongo
+    /// </summary>
+    public static void ReloadValues()
+    {
+        MongoConfigurationSource.Provider.Load();
     }
 }
