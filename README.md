@@ -46,11 +46,17 @@ You likely want to use the existing configuration to load up the appropriate val
 The package provides functions for setting/updating and removing stored configuration values.
 
 ```{C#}
-MongoConfigurationManager.ClearValue("Config:Key");
+await MongoConfigurationManager.ClearValue("Config:Key");
 
-MongoConfigurationManager.SetValue("Config:Key", "Value");
+await MongoConfigurationManager.SetValue("Config:Key", "Value");
+```
+
+If you are running in a multi-server deployment and want to trigger configuration reloads on all nodes when updated, you can use a changestream which calls the ReloadValues method.
+
+```{C#}
+MongoConfigurationManager.ReloadValues();
 ```
 
 ## Mongo version support
 
-The package uses version `2.26.0` of the MongoDB C# driver. This supports MongoDB versions 3.6 or later, as shown in the [MongoDB compatibility docs](https://www.mongodb.com/docs/drivers/csharp/current/compatibility/).
+The package internally uses version `3.8.0` of the MongoDB C# driver. This supports MongoDB versions 4.2 or later, as shown in the [MongoDB compatibility docs](https://www.mongodb.com/docs/drivers/csharp/current/compatibility/).
