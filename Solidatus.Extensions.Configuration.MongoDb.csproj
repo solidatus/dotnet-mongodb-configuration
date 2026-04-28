@@ -10,7 +10,7 @@
     <PropertyGroup>
         <PackageId>Solidatus.Extensions.Configuration.MongoDb</PackageId>
         <Title>MongoDb Configuration Provider</Title>
-        <Version>2.2.0</Version>
+        <Version>2.2.1</Version>
         <Authors>Robert Prust</Authors>
         <Company>Solidatus</Company>
         <PackageTags>mongodb,configuration</PackageTags>
@@ -35,7 +35,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.7">
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="MongoDB.Driver" Version="2.*">
+        <PackageReference Include="MongoDB.Driver" Version="2.27.0">
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
     </ItemGroup>
