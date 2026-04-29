@@ -51,6 +51,6 @@ public static class MongoConfigurationManager
     /// </summary>
     public static void ReloadValues()
     {
-        MongoConfigurationSource.Provider.Load();
+        MongoConfigurationProvider.Get().Load();
     }
 }

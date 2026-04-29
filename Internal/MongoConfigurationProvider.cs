@@ -1,52 +1,18 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Solidatus.Extensions.Configuration.MongoDb.Internal;
 
-internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry> collection) : IConfigurationProvider
+internal sealed class MongoConfigurationProvider : ConfigurationProvider
 {
-    private readonly ConfigurationReloadToken _reloadToken = new();
-
-    public bool TryGet(string key, out string? value)
-    {
-        var entry = collection.Find(Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key)).SingleOrDefault();
-
-        value = entry?.Value ?? null;
-
-        return entry is not null;
-    }
-
-    public void Set(string key, string? value)
-    {
-        var updateOptions = new ReplaceOptions
-        {
-            IsUpsert = true
-        };
-
-        var entry = new ConfigDbEntry
-        {
-            Key = key,
-            Value = value
-        };
-
-        collection.ReplaceOne(
-            Builders<ConfigDbEntry>.Filter.Eq(e => e.Key, key),
-            entry,
-            updateOptions);
-    }
-
-    public IChangeToken GetReloadToken()
-    {
-        return this._reloadToken;
-    }
+    private static MongoConfigurationProvider? _instance;
     
-    /// <summary>
-    /// Called when the configuration source is added, this ensures that the key field can be quickly queried
-    /// </summary>
-    public void Load()
+    private readonly IMongoCollection<ConfigDbEntry> _collection;
+    
+    private MongoConfigurationProvider(IMongoCollection<ConfigDbEntry> collection)
     {
+        this._collection = collection;
+        
         collection.Indexes.CreateOne(
             new CreateIndexModel<ConfigDbEntry>(
                 Builders<ConfigDbEntry>.IndexKeys.Descending(e => e.Key),
@@ -54,35 +20,33 @@ internal sealed class MongoConfigurationProvider(IMongoCollection<ConfigDbEntry>
             )
         );
     }
-    
-    public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string? parentPath)
-    {
-        var filter = Builders<ConfigDbEntry>.Filter.Empty;
 
-        if (parentPath is not null)
+    public static MongoConfigurationProvider Create(IMongoCollection<ConfigDbEntry> collection)
+    {
+        if (_instance is not null) return _instance;
+        
+        if (collection is null)
         {
-            filter = Builders<ConfigDbEntry>.Filter.Regex(entry => entry.Key,
-                new BsonRegularExpression($"^{parentPath}.*"));
+            throw new ArgumentException("Collection is required when provider first constructed",
+                nameof(collection));
         }
 
-        var childKeys = collection
-            .Find(filter)
-            .ToList()
-            .Select(entry => ExtractNextKeySection(entry.Key, parentPath?.Length ?? 0))
-            .ToList();
-
-        childKeys.AddRange(earlierKeys);
-        childKeys.Sort();
-
-        return childKeys;
+        return _instance = new MongoConfigurationProvider(collection);
     }
 
-    private static string ExtractNextKeySection(string key, int prefixLength)
+    public static MongoConfigurationProvider Get()
     {
-        var nextSectionBreak = key.IndexOf(':', prefixLength);
-
-        return nextSectionBreak is -1
-            ? key.Substring(prefixLength)
-            : key.Substring(prefixLength, nextSectionBreak - prefixLength);
+        return _instance ?? throw new InvalidOperationException("MongoConfigurationProvider is not initialized");
+    }
+    
+    /// <summary>
+    /// Called when the configuration source is added, this ensures that the key field can be quickly queried
+    /// </summary>
+    public override void Load()
+    {
+        this.Data = this._collection
+            .Find(Builders<ConfigDbEntry>.Filter.Empty)
+            .ToList()
+            .ToDictionary(x => x.Key, x => x.Value);
     }
 }

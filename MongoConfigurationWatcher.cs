@@ -12,7 +12,7 @@ public class MongoConfigurationWatcher : BackgroundService
         
         await cursor.ForEachAsync(_ =>
         {
-            MongoConfigurationSource.Provider.Load();
+            MongoConfigurationProvider.Get().Load();
         }, cancellationToken: stoppingToken);
     }
 }
